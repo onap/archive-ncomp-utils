@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.openecomp.ncomp.utils</groupId>
+  <artifactId>ncomp-utils</artifactId> 
+  <packaging>pom</packaging>
+  <name>ncomp-utils</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  
+		
+	<pluginRepositories>
+		<!-- Black Duck plugin dependencies -->
+		<pluginRepository>
+			<id>JCenter</id>
+			<name>JCenter Repository</name>
+			<url>http://jcenter.bintray.com</url>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>Restlet</id>
+			<name>Restlet Repository</name>
+			<url>http://maven.restlet.com</url>
+		</pluginRepository>
+	</pluginRepositories>
+<build>
+				<plugins>
+				
+		<!-- blackduck maven plugin -->
+			<plugin>
+				<groupId>com.blackducksoftware.integration</groupId>
+				<artifactId>hub-maven-plugin</artifactId>
+				<version>1.4.0</version>
+				<inherited>false</inherited>
+				<configuration>
+					<hubProjectName>${project.name}</hubProjectName>
+					<outputDirectory>${project.basedir}</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-bdio-file</id>
+						<phase>package</phase>
+						<goals>
+							<goal>createHubOutput</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> 
+       <!-- site maven plugin -->
+       <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-site-plugin</artifactId>
+           <version>3.6</version>
+           <dependencies>
+             <dependency>
+               <groupId>org.apache.maven.wagon</groupId>
+               <artifactId>wagon-webdav-jackrabbit</artifactId>
+               <version>2.10</version>
+             </dependency>
+           </dependencies>
+       </plugin>
+    
+				</plugins>
+		</build>	
+		<modules>
+    <module>ncomp-utils-java</module>
+    <module>ncomp-utils-journaling</module>
+    <module>ncomp-utils-java-extra</module>
+  </modules>
+  <parent>
+  	<groupId>org.openecomp.ncomp.maven</groupId>
+  	<artifactId>ncomp-maven-base</artifactId>
+  	<version>0.1.0-SNAPSHOT</version>
+  	<relativePath>../dcae-org.openecomp.ncomp.maven/ncomp-maven-base</relativePath>
+  </parent>
+</project>
