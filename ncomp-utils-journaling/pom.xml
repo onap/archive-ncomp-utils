@@ -123,13 +123,13 @@
 	
 		<distributionManagement>
 			<repository>
-				<id>osecomp-nexus-releases</id>
-				<name>OSECOMP Release Repository</name>
+				<id>ecomp-releases</id>
+				<name>OpenECOMP Release Repository</name>
 				<url>${openecomp.nexus.releases}</url>
 			</repository>
 			<snapshotRepository>
-				<id>osecomp-nexus-snapshots</id>
-				<name>OSECOMP Snapshot Repository</name>
+				<id>ecomp-snapshots</id>
+				<name>OpenECOMP Snapshot Repository</name>
 				<url>${openecomp.nexus.snapshots}</url>
 			</snapshotRepository>
 			<site>
