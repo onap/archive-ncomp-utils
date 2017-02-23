@@ -11,6 +11,9 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<openecomp.nexus.releases>https://nexus.openecomp.org/content/repositories/releases/</openecomp.nexus.releases>
 		<openecomp.nexus.snapshots>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.snapshots>
+		<openecomp.nexus.proxy>https://nexus.openecomp.org</openecomp.nexus.proxy>
+		<openecomp.nexus.staging.serverId>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.staging.serverId>
+		<openecomp.nexus.staging.profileId>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.staging.profileId>
 	</properties>
 
 	
@@ -30,6 +33,17 @@
 	</pluginRepositories>
 <build>
 		<plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>${openecomp.nexus.staging.profileId}</serverId>
+                    <nexusUrl>${openecomp.nexus.proxy}</nexusUrl>
+                    <stagingProfileId>${openecomp.nexus.staging.profileId}</stagingProfileId>
+                </configuration>
+            </plugin>
 		<!-- blackduck maven plugin -->
 			<plugin>
 				<groupId>com.blackducksoftware.integration</groupId>
