@@ -13,7 +13,7 @@
 		<openecomp.nexus.snapshots>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.snapshots>
 		<openecomp.nexus.proxy>https://nexus.openecomp.org</openecomp.nexus.proxy>
 		<openecomp.nexus.staging.serverId>ecomp-staging</openecomp.nexus.staging.serverId>
-		<openecomp.nexus.staging.profileId>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.staging.profileId>
+		<openecomp.nexus.staging.profileId>176c31dfe190a</openecomp.nexus.staging.profileId>
 	</properties>
 
 	
