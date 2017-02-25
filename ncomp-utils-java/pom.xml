@@ -12,25 +12,11 @@
 		<openecomp.nexus.releases>https://nexus.openecomp.org/content/repositories/releases/</openecomp.nexus.releases>
 		<openecomp.nexus.snapshots>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.snapshots>
 		<openecomp.nexus.proxy>https://nexus.openecomp.org</openecomp.nexus.proxy>
-		<openecomp.nexus.staging.serverId>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.staging.serverId>
+		<openecomp.nexus.staging.serverId>ecomp-staging</openecomp.nexus.staging.serverId>
 		<openecomp.nexus.staging.profileId>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.staging.profileId>
 	</properties>
 
 	
-	<pluginRepositories>
-		<!-- Black Duck plugin dependencies -->
-		<pluginRepository>
-			<id>JCenter</id>
-			<name>JCenter Repository</name>
-			<url>http://jcenter.bintray.com</url>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>Restlet</id>
-			<name>Restlet Repository</name>
-			<url>http://maven.restlet.com</url>
-		</pluginRepository>
-	</pluginRepositories>
 <build>
 		<plugins>
             <plugin>
@@ -39,31 +25,11 @@
                 <version>1.6.7</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>${openecomp.nexus.staging.profileId}</serverId>
+                    <serverId>${openecomp.nexus.staging.serverId}</serverId>
                     <nexusUrl>${openecomp.nexus.proxy}</nexusUrl>
                     <stagingProfileId>${openecomp.nexus.staging.profileId}</stagingProfileId>
                 </configuration>
             </plugin>
-		<!-- blackduck maven plugin -->
-			<plugin>
-				<groupId>com.blackducksoftware.integration</groupId>
-				<artifactId>hub-maven-plugin</artifactId>
-				<version>1.4.0</version>
-				<inherited>false</inherited>
-				<configuration>
-					<hubProjectName>${project.name}</hubProjectName>
-					<outputDirectory>${project.basedir}</outputDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>create-bdio-file</id>
-						<phase>package</phase>
-						<goals>
-							<goal>createHubOutput</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
        <!-- site maven plugin -->
        <plugin>
            <groupId>org.apache.maven.plugins</groupId>

@@ -13,43 +13,9 @@
 
   
 		
-	<pluginRepositories>
-		<!-- Black Duck plugin dependencies -->
-		<pluginRepository>
-			<id>JCenter</id>
-			<name>JCenter Repository</name>
-			<url>http://jcenter.bintray.com</url>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>Restlet</id>
-			<name>Restlet Repository</name>
-			<url>http://maven.restlet.com</url>
-		</pluginRepository>
-	</pluginRepositories>
 <build>
 				<plugins>
 				
-		<!-- blackduck maven plugin -->
-			<plugin>
-				<groupId>com.blackducksoftware.integration</groupId>
-				<artifactId>hub-maven-plugin</artifactId>
-				<version>1.4.0</version>
-				<inherited>false</inherited>
-				<configuration>
-					<hubProjectName>${project.name}</hubProjectName>
-					<outputDirectory>${project.basedir}</outputDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>create-bdio-file</id>
-						<phase>package</phase>
-						<goals>
-							<goal>createHubOutput</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> 
        <!-- site maven plugin -->
        <plugin>
            <groupId>org.apache.maven.plugins</groupId>
