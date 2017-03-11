@@ -22,6 +22,7 @@
 package org.openecomp.ncomp.webservice.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -43,6 +45,7 @@ import org.json.JSONObject;
 
 import org.openecomp.ncomp.utils.PropertyUtil;
 import org.openecomp.ncomp.utils.StringUtil;
+import org.yaml.snakeyaml.Yaml;
 
 public class JsonUtils {
 	public static final Logger logger = Logger.getLogger(JsonUtils.class);
@@ -463,5 +466,22 @@ public class JsonUtils {
 				}
 		}
 		return res;
+	}
+
+	public static JSONObject yaml2json(File file) throws IOException {
+		InputStream in = FileUtils.filename2stream(file.getAbsolutePath(), null);
+		if (in == null)
+			throw new RuntimeException("Unable to open: " + file);
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+		try {
+			FileUtils.copyStream(in, buf);
+		} finally {
+			in.close();
+			buf.close();
+		}
+	    Yaml yaml= new Yaml();
+	    @SuppressWarnings("unchecked")
+		Map<String,Object> map= (Map<String, Object>) yaml.load(buf.toString());
+	    return new JSONObject(map);
 	}
 }

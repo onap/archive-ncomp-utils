@@ -635,7 +635,7 @@ public class FileUtils {
 
 	public static String safeFileName(String file) {
 		// creating file with safer creation. 
-		if (file.contains("..")) 
+		if (file.contains("../")) 
 			throw new RuntimeException("File name contain ..: " + file);
 		if (file.contains("\n")) 
 			throw new RuntimeException("File name contain newline: " + file);
