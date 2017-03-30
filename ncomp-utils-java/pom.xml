@@ -9,9 +9,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.compiler.source>1.7</maven.compiler.source>
-		<openecomp.nexus.releases>https://nexus.openecomp.org/content/repositories/releases/</openecomp.nexus.releases>
-		<openecomp.nexus.snapshots>https://nexus.openecomp.org/content/repositories/snapshots/</openecomp.nexus.snapshots>
-		<openecomp.nexus.proxy>https://nexus.openecomp.org</openecomp.nexus.proxy>
+		<openecomp.nexus.releases>https://nexus.onap.org/content/repositories/releases/</openecomp.nexus.releases>
+		<openecomp.nexus.snapshots>https://nexus.onap.org/content/repositories/snapshots/</openecomp.nexus.snapshots>
+		<openecomp.nexus.proxy>https://nexus.onap.org</openecomp.nexus.proxy>
 		<openecomp.nexus.staging.serverId>ecomp-staging</openecomp.nexus.staging.serverId>
 		<openecomp.nexus.staging.profileId>176c31dfe190a</openecomp.nexus.staging.profileId>
 	</properties>
