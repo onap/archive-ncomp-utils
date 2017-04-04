@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openecomp.ncomp.utils</groupId>
 	<artifactId>ncomp-utils-java</artifactId>
@@ -14,7 +14,7 @@
 		<openecomp.nexus.proxy>https://nexus.onap.org</openecomp.nexus.proxy>
 		<openecomp.nexus.staging.serverId>ecomp-staging</openecomp.nexus.staging.serverId>
 		<openecomp.nexus.staging.profileId>176c31dfe190a</openecomp.nexus.staging.profileId>
-	</properties>
+	<nexusproxy>https://nexus.onap.org</nexusproxy></properties>
 
 	
 <build>
@@ -48,8 +48,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source />
-					<target />
+					<source/>
+					<target/>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -110,8 +110,8 @@
 				<url>${openecomp.nexus.snapshots}</url>
 			</snapshotRepository>
 			<site>
-				<id>dcae-javadoc</id>
-				<url>${site.urlroot}/${project.artifactId}/${project.version}/</url>
+				<id>ecomp-site</id>
+				<url>dav:${nexusproxy}/content/sites/site/org/openecomp/ncomp/utils/${project.artifactId}/${project.version}/</url>
 			</site>
 		</distributionManagement>
 	
