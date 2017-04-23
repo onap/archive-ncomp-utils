@@ -5,16 +5,29 @@
 	<artifactId>ncomp-utils-java-extra</artifactId>
 	<version>1.1.0-SNAPSHOT</version>
 
+
+
+
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.compiler.source>1.7</maven.compiler.source>
-		<openecomp.nexus.releases>https://nexus.onap.org/content/repositories/releases/</openecomp.nexus.releases>
-		<openecomp.nexus.snapshots>https://nexus.onap.org/content/repositories/snapshots/</openecomp.nexus.snapshots>
-		<openecomp.nexus.proxy>https://nexus.onap.org</openecomp.nexus.proxy>
+		<nexusproxy>https://nexus.onap.org</nexusproxy>
+		<openecomp.nexus.releases>${nexusproxy}/content/repositories/releases/</openecomp.nexus.releases>
+		<openecomp.nexus.snapshots>${nexusproxy}/content/repositories/snapshots/</openecomp.nexus.snapshots>
+		<openecomp.nexus.proxy>${nexusproxy}</openecomp.nexus.proxy>
 		<openecomp.nexus.staging.serverId>ecomp-staging</openecomp.nexus.staging.serverId>
 		<openecomp.nexus.staging.profileId>176c31dfe190a</openecomp.nexus.staging.profileId>
-	<nexusproxy>https://nexus.onap.org</nexusproxy></properties>
+		<groupPath>ncomp/utils</groupPath>
+		<site.path>content/sites/site/org/openecomp/${groupPath}/${project.artifactId}/${project.version}</site.path>
+		<site.urlroot>dav:${nexusproxy}</site.urlroot>
+		<site.url>${site.urlroot}/${site.path}/</site.url>
+	</properties>
+
+
+
+
 
 	
 <build>
@@ -116,7 +129,7 @@
 			</snapshotRepository>
 			<site>
 				<id>ecomp-site</id>
-				<url>dav:${nexusproxy}/content/sites/site/org/openecomp/ncomp/utils/${project.artifactId}/${project.version}/</url>
+			<url>${site.url}</url>
 			</site>
 		</distributionManagement>
 	
