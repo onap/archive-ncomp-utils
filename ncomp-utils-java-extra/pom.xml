@@ -9,6 +9,7 @@
 
 
 
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.7</maven.compiler.target>
@@ -19,11 +20,11 @@
 		<openecomp.nexus.proxy>${nexusproxy}</openecomp.nexus.proxy>
 		<openecomp.nexus.staging.serverId>ecomp-staging</openecomp.nexus.staging.serverId>
 		<openecomp.nexus.staging.profileId>176c31dfe190a</openecomp.nexus.staging.profileId>
-		<groupPath>ncomp/utils</groupPath>
-		<site.path>content/sites/site/org/openecomp/${groupPath}/${project.artifactId}/${project.version}</site.path>
+		<site.path>content/sites/site/org/openecomp/${GERRIT_PROJECT}/${project.artifactId}/${project.version}</site.path>
 		<site.urlroot>dav:${nexusproxy}</site.urlroot>
 		<site.url>${site.urlroot}/${site.path}/</site.url>
 	</properties>
+
 
 
 
