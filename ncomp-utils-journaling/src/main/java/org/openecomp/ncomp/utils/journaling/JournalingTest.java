@@ -153,7 +153,7 @@ public class JournalingTest extends TestCase {
 		for (int i = 0; i < 10; i++) {
 			o.setS("foo:" + i);
 		}
-		assertTrue(o.getLogSize() <= 2);
+		assertTrue(o.getLogSize() == 12);
 		o.close();
 
 		for (int i = 0; i < 3; i++) {

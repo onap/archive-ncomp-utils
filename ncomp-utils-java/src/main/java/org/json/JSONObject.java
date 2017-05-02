@@ -140,6 +140,10 @@ public class JSONObject {
 		public boolean equals(Object object) {
             return object == null || object == this;
         }
+        @Override
+        public int hashCode() {
+        	return super.hashCode();
+        }
 
 
         /**
@@ -351,39 +355,39 @@ public class JSONObject {
                 Method method = methods[i];
                 if (Modifier.isPublic(method.getModifiers())) {
                     String name = method.getName();
-                    String key = "";
+                    String k = "";
                     if (name.startsWith("get")) {
-                        key = name.substring(3);
+                        k = name.substring(3);
                     } else if (name.startsWith("is")) {
-                        key = name.substring(2);
+                        k = name.substring(2);
                     }
-                    if (key.length() > 0 &&
-                            Character.isUpperCase(key.charAt(0)) &&
+                    if (k.length() > 0 &&
+                            Character.isUpperCase(k.charAt(0)) &&
                             method.getParameterTypes().length == 0) {
-                        if (key.length() == 1) {
-                            key = key.toLowerCase();
-                        } else if (!Character.isUpperCase(key.charAt(1))) {
-                            key = key.substring(0, 1).toLowerCase() +
-                                key.substring(1);
+                        if (k.length() == 1) {
+                            k = k.toLowerCase();
+                        } else if (!Character.isUpperCase(k.charAt(1))) {
+                            k = k.substring(0, 1).toLowerCase() +
+                                k.substring(1);
                         }
 
                         Object result = method.invoke(bean, (Object[])null);
                         if (result == null) {
-                            map.put(key, NULL);
+                            map.put(k, NULL);
                         } else if (result.getClass().isArray()) {
-                            map.put(key, new JSONArray(result, includeSuperClass));
+                            map.put(k, new JSONArray(result, includeSuperClass));
                         } else if (result instanceof Collection) { // List or Set
-                            map.put(key, new JSONArray((Collection<?>)result, includeSuperClass));
+                            map.put(k, new JSONArray((Collection<?>)result, includeSuperClass));
                         } else if (result instanceof Map) {
-                            map.put(key, new JSONObject((Map<?, ?>)result, includeSuperClass));
+                            map.put(k, new JSONObject((Map<?, ?>)result, includeSuperClass));
                         } else if (isStandardProperty(result.getClass())) { // Primitives, String and Wrapper
-                            map.put(key, result);
+                            map.put(k, result);
                         } else {
                             if (result.getClass().getPackage().getName().startsWith("java") ||
                                     result.getClass().getClassLoader() == null) {
-                                map.put(key, result.toString());
+                                map.put(k, result.toString());
                             } else { // User defined Objects
-                                map.put(key, new JSONObject(result, includeSuperClass));
+                                map.put(k, new JSONObject(result, includeSuperClass));
                             }
                         }
                     }

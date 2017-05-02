@@ -157,7 +157,7 @@ public class EStringUtil<T extends EObject> {
 	 * @param str
 	 */
 	public T str2ecore(String str) {
-		String[] fields = str.split(delimRegexp[0],-1);
+		String[] fields = str.split(checkRegexp(delimRegexp[0]),-1);
 		int j = 0;
 		T e = sample;
 		for (EAttribute attr : featureList) {
@@ -179,7 +179,7 @@ public class EStringUtil<T extends EObject> {
 				String s = fields[j++];
 				String[] values = {};
 				// empty string should an empty list instead of a one element list with and empty string
-				if (s.length()>0) values = s.split(delimRegexp[1],-1);
+				if (s.length()>0) values = s.split(checkRegexp(delimRegexp[1]),-1);
 				for (String v : values) {
 					String vv = fixValue(t, v);
 					l.add(t.getEPackage().getEFactoryInstance().createFromString(attr.getEAttributeType(), vv));
@@ -191,6 +191,17 @@ public class EStringUtil<T extends EObject> {
 			}
 		}
 		return e;
+	}
+
+	// ensure that not arbitary regexp is evaluated: Denial of Service: Regular Expression
+	private String checkRegexp(String regexp) {
+		switch (regexp) {
+		case "\\|":
+		case ":":
+		case "\t":
+		case ",": return regexp;
+		}
+		throw new RuntimeException("Regexp not trusted: " + regexp);
 	}
 
 	private String fixValue(EDataType t, String v) {

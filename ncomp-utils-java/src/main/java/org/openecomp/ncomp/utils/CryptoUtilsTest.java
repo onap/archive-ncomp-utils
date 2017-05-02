@@ -56,11 +56,11 @@ import org.openecomp.ncomp.webservice.utils.FileUtils;
 
 
 public class CryptoUtilsTest extends TestCase {
-	String key = "dafdfkj";
-	String value = "Hello";
+	String k = "dafdfkj";
+	String v = "Hello";
 
     public void test_encrypt() {
-    	assertEquals(value, decrypt(key,encrypt(key, value)));
+    	assertEquals(v, decrypt(k,encrypt(k, v)));
     }
     public void test_streams() throws Exception {
 		Cipher aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
@@ -96,7 +96,7 @@ public class CryptoUtilsTest extends TestCase {
     @SuppressWarnings("resource")
 	public void test_streams_2() throws Exception {
     	InputStream in = new FileInputStream("test/Test.txt");
-    	in = getInputStream(in, EncryptionType.ENCRYPT, key);
+    	in = getInputStream(in, EncryptionType.ENCRYPT, k);
     	FileOutputStream out = new FileOutputStream("test/Encrypted.txt");
 		try {
 			FileUtils.copyStream(in, out);
@@ -107,7 +107,7 @@ public class CryptoUtilsTest extends TestCase {
 				out.close();
 		}
     	in = new FileInputStream("test/Encrypted.txt");
-    	in = getInputStream(in, EncryptionType.DECRYPT, key);
+    	in = getInputStream(in, EncryptionType.DECRYPT, k);
     	out = new FileOutputStream("test/Decrypted.txt");
 		try {
 			FileUtils.copyStream(in, out);
@@ -124,10 +124,10 @@ public class CryptoUtilsTest extends TestCase {
     	KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		Cipher rsa = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		rsa.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
-		byte[] ciphertext = rsa.doFinal(value.getBytes());
+		byte[] ciphertext = rsa.doFinal(v.getBytes());
 		rsa.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 		byte[] text = rsa.doFinal(ciphertext);
-		assertEquals(value, new String(text));
+		assertEquals(v, new String(text));
     }
     
     public void test_public_key_1() throws Exception {
@@ -141,10 +141,10 @@ public class CryptoUtilsTest extends TestCase {
     	PrivateKey k2 = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(decode64(privateKey)));
     	Cipher rsa = Cipher.getInstance("RSA/ECB/PKCS1Padding");
     	rsa.init(Cipher.ENCRYPT_MODE, k1);
-		byte[] ciphertext = rsa.doFinal(value.getBytes());
+		byte[] ciphertext = rsa.doFinal(v.getBytes());
 		rsa.init(Cipher.DECRYPT_MODE, k2);
 		byte[] text = rsa.doFinal(ciphertext);
-		assertEquals(value, new String(text));
+		assertEquals(v, new String(text));
 
     }
 
@@ -154,7 +154,7 @@ public class CryptoUtilsTest extends TestCase {
     	System.out.println(digest(decode64(publicKey)));
     	String privateKey = getKey("test/key.private");
     	System.out.println(digest(decode64(privateKey)));
-    	assertEquals(value, decryptPrivate(privateKey,encryptPublic(publicKey, value)));
+    	assertEquals(v, decryptPrivate(privateKey,encryptPublic(publicKey, v)));
     }
 
 }

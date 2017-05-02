@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.lang.reflect.Field;
@@ -44,6 +43,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.serialization.ValidatingObjectInputStream;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -63,9 +63,13 @@ public abstract class JournalingObject {
 	private int snapShotInterval = 30 * 60000; // every 30 minutes
 	private Date lastSnapShot  = new Date();
 	private int numLogs = 0;
+	static private List<String> whiteList = new ArrayList<String>();
 
 	static {
 		startCleanupThread();
+		whiteList.add("org.openecomp.ncomp.utils.journaling.*");
+		whiteList.add("java.util.*");
+		whiteList.add("java.lang.*");
 	}
 
 	public JournalingObject(String context, JournalingObject parent) {
@@ -254,7 +258,8 @@ public abstract class JournalingObject {
 		try {
 			logger.debug("reading" + file);
 			BufferedInputStream fin = new BufferedInputStream(new FileInputStream(file),16777216);
-			ObjectInputStream in = new ObjectInputStream(fin);
+			ValidatingObjectInputStream in = new ValidatingObjectInputStream(fin);
+			addAccept(in);
 			Object o = null;
 			try {
 				o = in.readObject();
@@ -281,7 +286,7 @@ public abstract class JournalingObject {
 		return numLogs;
 	}
 
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "deprecation" })
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		CommandLineParser parser = new GnuParser();
 
@@ -303,7 +308,8 @@ public abstract class JournalingObject {
 		// String args1[] = line.getArgs();
 		if (line.hasOption("file")) {
 			FileInputStream fin = new FileInputStream(new File(line.getOptionValue("file")));
-			ObjectInputStream in = new ObjectInputStream(fin);
+			ValidatingObjectInputStream in = new ValidatingObjectInputStream(fin);
+			addAccept(in);
 			try {
 				while (true) {
 					Object o;
@@ -323,6 +329,15 @@ public abstract class JournalingObject {
 				in.close();
 			}
 		}
+	}
+
+	private static void addAccept(ValidatingObjectInputStream in) {
+		for (String s : whiteList) {
+			in.accept(s);
+		}
+	}
+	public static void addClassToWhiteList(String s) {
+		whiteList.add(s);
 	}
 
 	static int num = 0;
@@ -363,7 +378,8 @@ public abstract class JournalingObject {
 		Object o = null;
 		try {
 			FileInputStream fin = new FileInputStream(file);
-			ObjectInputStream in = new ObjectInputStream(fin);
+			ValidatingObjectInputStream in = new ValidatingObjectInputStream(fin);
+			addAccept(in);
 			try {
 				while (true) {
 					try {
@@ -393,7 +409,7 @@ public abstract class JournalingObject {
 		} catch (EOFException e) {
 			logger.debug("initFromLog failed: " + file + " numEvents=" + numEvents + " o=" + o);
 		} catch (Exception e) {
-			logger.warn("initFromLog failed: " + file + " numEvents=" + numEvents + " o=" + o.getClass());
+			System.err.println(e);
 			logger.debug("initFromLog failed: " + file + " numEvents=" + numEvents + " o=" + o);
 			e.printStackTrace();
 		}
