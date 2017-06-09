@@ -95,7 +95,7 @@ public class HTTP {
         String         t;
 
         t = x.nextToken();
-        if (t.toUpperCase().startsWith("HTTP")) {
+        if (t.length() > 3 && t.substring(0,4).equalsIgnoreCase("HTTP")) {
 
 // Response
 

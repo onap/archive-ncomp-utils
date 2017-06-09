@@ -23,6 +23,7 @@ package org.openecomp.ncomp.utils.emf;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -37,6 +38,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.openecomp.ncomp.utils.SecurityUtils;
 import org.openecomp.ncomp.webservice.utils.ErrorMap;
 import org.openecomp.ncomp.webservice.utils.FileUtils;
 
@@ -194,14 +196,9 @@ public class EStringUtil<T extends EObject> {
 	}
 
 	// ensure that not arbitary regexp is evaluated: Denial of Service: Regular Expression
+	private List<String> allowedDelimeter = Arrays.asList("\\|",",",":","\t");
 	private String checkRegexp(String regexp) {
-		switch (regexp) {
-		case "\\|":
-		case ":":
-		case "\t":
-		case ",": return regexp;
-		}
-		throw new RuntimeException("Regexp not trusted: " + regexp);
+		return SecurityUtils.whiteList(regexp,allowedDelimeter,"Denial of Service: Regular Expression");
 	}
 
 	private String fixValue(EDataType t, String v) {

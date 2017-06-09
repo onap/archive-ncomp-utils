@@ -71,7 +71,7 @@ public class ByteBufferUtils {
 		ip = 256 * ip + getInt(buf);
 		ip = 256 * ip + getInt(buf);
 		ip = 256 * ip + getInt(buf);
-		if (debug ) System.out.println ( "getIpInt: " + IpUtils.toString(ip));
+//		if (debug ) System.out.println ( "getIpInt: " + IpUtils.toString(ip));
 		return ip;
 	}
 

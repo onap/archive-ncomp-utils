@@ -22,6 +22,7 @@
 package org.openecomp.ncomp.utils.maps;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.openecomp.ncomp.webservice.utils.FileUtils;
@@ -36,7 +37,7 @@ public class PersistedHashMap<K extends Serializable, V extends Serializable> ex
 		this.file = file;
 		HashMap<K, V> m = null;
 		try {
-			m = (HashMap<K, V>) FileUtils.file2object(file);
+			m = (HashMap<K, V>) FileUtils.file2object(file,Arrays.asList(PersistedDateHashMap.class.getName()));
 		} catch (Exception e) {
 		}
 		if (m != null) 

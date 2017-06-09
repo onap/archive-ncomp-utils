@@ -68,23 +68,27 @@ public class CryptoUtilsTest extends TestCase {
 		digest.update("foobar".getBytes());
 		SecretKeySpec key1 = new SecretKeySpec(digest.digest(), 0, 16, "AES");
 		aes.init(Cipher.ENCRYPT_MODE, key1);
-		InputStream in = new FileInputStream("test/Test.txt");
-		in = new CipherInputStream(in, aes);
-		FileOutputStream out = new FileOutputStream("test/Encrypted.txt");
+		InputStream in = null;
+		FileOutputStream out = null;
 		try {
-			FileUtils.copyStream(in, out);
+			in = new FileInputStream("test/Test.txt");
+			CipherInputStream in2 = new CipherInputStream(in, aes);
+			out = new FileOutputStream("test/Encrypted.txt");
+			FileUtils.copyStream(in2, out);
 		} finally {
 			if (in != null)
 				in.close();
 			if (out != null)
 				out.close();
 		}
+		in = null;
+		out = null;
 		aes.init(Cipher.DECRYPT_MODE, key1);
-		in = new FileInputStream("test/Encrypted.txt");
-		in = new CipherInputStream(in, aes);
-		out = new FileOutputStream("test/Decrypted.txt");
 		try {
-			FileUtils.copyStream(in, out);
+			in = new FileInputStream("test/Encrypted.txt");
+			CipherInputStream in2 = new CipherInputStream(in, aes);
+			out = new FileOutputStream("test/Decrypted.txt");
+			FileUtils.copyStream(in2, out);
 		} finally {
 			if (in != null)
 				in.close();
@@ -95,25 +99,35 @@ public class CryptoUtilsTest extends TestCase {
 	}
     @SuppressWarnings("resource")
 	public void test_streams_2() throws Exception {
-    	InputStream in = new FileInputStream("test/Test.txt");
-    	in = getInputStream(in, EncryptionType.ENCRYPT, k);
-    	FileOutputStream out = new FileOutputStream("test/Encrypted.txt");
+    	InputStream in = null;
+    	InputStream in2 = null;
+    	FileOutputStream out = null;
 		try {
-			FileUtils.copyStream(in, out);
+	    	in = new FileInputStream("test/Test.txt");
+	    	in2 = getInputStream(in, EncryptionType.ENCRYPT, k);
+	    	out = new FileOutputStream("test/Encrypted.txt");
+			FileUtils.copyStream(in2, out);
 		} finally {
 			if (in != null)
 				in.close();
+			if (in2 != null)
+				in2.close();
 			if (out != null)
 				out.close();
 		}
-    	in = new FileInputStream("test/Encrypted.txt");
-    	in = getInputStream(in, EncryptionType.DECRYPT, k);
-    	out = new FileOutputStream("test/Decrypted.txt");
+		in = null;
+		in2 = null;
+		out = null;
 		try {
-			FileUtils.copyStream(in, out);
+	    	in = new FileInputStream("test/Encrypted.txt");
+	    	in2 = getInputStream(in, EncryptionType.DECRYPT, k);
+	    	out = new FileOutputStream("test/Decrypted.txt");
+			FileUtils.copyStream(in2, out);
 		} finally {
 			if (in != null)
 				in.close();
+			if (in2 != null)
+				in2.close();
 			if (out != null)
 				out.close();
 		}

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ServiceConfigurationError;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -46,8 +47,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.serialization.ValidatingObjectInputStream;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-
-import org.openecomp.ncomp.webservice.utils.FileUtils;
+import org.openecomp.ncomp.utils.SecurityUtils;
 
 public abstract class JournalingObject {
 	public static final Logger logger = Logger.getLogger(JournalingObject.class);
@@ -94,7 +94,7 @@ public abstract class JournalingObject {
 			dir.mkdirs();
 		logger.info("creating journaling data structure: " + o.getClass().getName() + " " + dir);
 		File logFile = saveObjectFile(dir, "log.dat");
-		File snapshotFile = FileUtils.createSafeFile(dir, "snapshot.dat");
+		File snapshotFile = SecurityUtils.createSafeFile(dir, "snapshot.dat");
 		if (snapshotFile.exists()) {
 			JournalingObject oo = initFromSnapshot(snapshotFile);
 			if (oo != null) {
@@ -192,13 +192,11 @@ public abstract class JournalingObject {
 			case SET_METHOD: {
 				try {
 					Field fld = this.getClass().getDeclaredField(e.pname);
-					fld.setAccessible(true);
 					logAttributeValue(e.pname, e.value);
 					fld.set(this, e.value);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					logger.error("Unable to set attribute: " + this.getClass().getName() + " " + e1);
-					logger.debug("Unable to set attribute: " + e.pname + " " + this.getClass().getName() + " " + e1);
+					logger.error("Unable to set attribute: " + p(e.pname) + " " + this.getClass().getName() + " " + e1);
 				}
 				return;
 			}
@@ -212,6 +210,10 @@ public abstract class JournalingObject {
 			throw new RuntimeException("Unknown Child: " + context + " not in " + children.keySet());
 		}
 		c.play(e, index - 1);
+	}
+
+	private String p(String s) {
+		return SecurityUtils.logForcingProtection(s);
 	}
 
 	protected String eventToString(JournalingEvent e) {
@@ -235,8 +237,8 @@ public abstract class JournalingObject {
 			} finally {
 				out.close();
 			}
-			File f = FileUtils.createSafeFile(dir, fName);
-			File t = FileUtils.createSafeFile(dir, tName);
+			File f = SecurityUtils.createSafeFile(dir, fName);
+			File t = SecurityUtils.createSafeFile(dir, tName);
 			if (f.exists()) {
 				f.delete();
 			}
@@ -279,7 +281,7 @@ public abstract class JournalingObject {
 		snapShotInterval = i;
 		lastSnapShot = new Date();
 		// make sure snapshots time are randomized and not happening at the same time.
-		lastSnapShot.setTime(lastSnapShot.getTime()-(long) (i*Math.random()));
+		lastSnapShot.setTime(lastSnapShot.getTime()-(long) (i*SecurityUtils.inSecureRandom()));
 	}
 
 	public int getLogSize() {
@@ -348,8 +350,8 @@ public abstract class JournalingObject {
 
 	static private File saveObjectFile(File dir, String fname, Date now) {
 		String fname2 = fname + "." + now.getTime() + "." + num++;
-		File f1 = FileUtils.createSafeFile(dir, fname);
-		File f2 = FileUtils.createSafeFile(dir, fname2);
+		File f1 = SecurityUtils.createSafeFile(dir, fname);
+		File f2 = SecurityUtils.createSafeFile(dir, fname2);
 		if (f1.exists()) {
 			if (f2.exists()) {
 				f2.delete();
@@ -363,7 +365,7 @@ public abstract class JournalingObject {
 	}
 
 	static private ObjectOutputStream getObjectFile(File dir, String fname) {
-		File f1 = FileUtils.createSafeFile(dir, fname);
+		File f1 = SecurityUtils.createSafeFile(dir, fname);
 		ObjectOutputStream s = null;
 		try {
 			s = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(f1)));
@@ -377,10 +379,12 @@ public abstract class JournalingObject {
 		int numEvents = 0;
 		Object o = null;
 		try {
-			FileInputStream fin = new FileInputStream(file);
-			ValidatingObjectInputStream in = new ValidatingObjectInputStream(fin);
-			addAccept(in);
+			FileInputStream fin = null; 
+			ValidatingObjectInputStream in = null;
 			try {
+				fin = new FileInputStream(file);
+				in = new ValidatingObjectInputStream(fin);
+				addAccept(in);
 				while (true) {
 					try {
 						o = in.readUnshared();
@@ -409,7 +413,6 @@ public abstract class JournalingObject {
 		} catch (EOFException e) {
 			logger.debug("initFromLog failed: " + file + " numEvents=" + numEvents + " o=" + o);
 		} catch (Exception e) {
-			System.err.println(e);
 			logger.debug("initFromLog failed: " + file + " numEvents=" + numEvents + " o=" + o);
 			e.printStackTrace();
 		}

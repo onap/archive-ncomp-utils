@@ -47,6 +47,8 @@ import org.openecomp.ncomp.utils.PropertyUtil;
 import org.openecomp.ncomp.utils.StringUtil;
 import org.yaml.snakeyaml.Yaml;
 
+import com.google.json.JsonSanitizer;
+
 public class JsonUtils {
 	public static final Logger logger = Logger.getLogger(JsonUtils.class);
 	HashMap<String, List<String>> features = new HashMap<String, List<String>>();
@@ -296,7 +298,7 @@ public class JsonUtils {
 			in.close();
 			buf.close();
 		}
-		return new JSONObject(buf.toString());
+		return new JSONObject(JsonSanitizer.sanitize(buf.toString()));
 	}
 
 	public static JSONObject file2json(String file, Properties props, String prefix) throws IOException {
@@ -313,7 +315,7 @@ public class JsonUtils {
 		String s = buf.toString().replaceAll("##.*", "");
 		try {
 			s = StringUtil.expandUsingProperties(s, props, prefix);
-			return new JSONObject(s);
+			return new JSONObject(JsonSanitizer.sanitize(s));
 		} catch (JSONException e) {
 			logger.debug("bad JSON String" + s + " " + e);
 			throw e;
@@ -345,7 +347,7 @@ public class JsonUtils {
 		if (out.toString().length() == 0) return null;
 		String s = out.toString().replaceAll("##.*", "");
 		try {
-			return new JSONObject(s);
+			return new JSONObject(JsonSanitizer.sanitize(s));
 		} catch (JSONException e) {
 			logger.debug("bad JSON String" + s + " " + e);
 			throw e;

@@ -70,19 +70,19 @@ public class PropertyUtil {
 		}
 
 		for (Object k : System.getProperties().keySet()) {
-			Object v = props.get(k);
+			Object v = props.get(p(k));
 			if (v != null) {
-				logger.info("Overwriting property from system property: " + replaceForLogForcingProtection(k) + " = " + replaceForLogForcingProtection(v));
+				logger.info("Overwriting property from system property: " + p(k) + " = " + p(v));
 			}
 			props.put(k, System.getProperties().get(k));
 		}
-		String hostname = InetAddress.getLocalHost().getHostName();
+		String hostname = SecurityUtils.getHostName();
 		props.put("user.hostname", hostname);
 		return props;
 	}
 
-	public static String replaceForLogForcingProtection(Object v) {
-		return v.toString().replace("\n", "NEWLINE");
+	private static String p(Object v) {
+		return SecurityUtils.logForcingProtection(v);
 	}
 
 }

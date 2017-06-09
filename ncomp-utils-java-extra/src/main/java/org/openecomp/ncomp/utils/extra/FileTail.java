@@ -173,22 +173,26 @@ public class FileTail {
 						continue;
 					}
 					RandomAccessFile rf = new RandomAccessFile(file, "r");
-					rf.seek(p);
-					String line = null;
-					while ((line = rf.readLine()) != null) {
-						if (line.length() == 0)
-							continue;
-						if (logger.isDebugEnabled())
-							logger.debug("New line from file: " + f + " " + line);
-						p = rf.getFilePointer();
-						try {
-							handler.newLine(file.getAbsolutePath(),line,context);
-						} catch (Exception e) {
-							logger.warn("Handler error: " + f + " " + e + " line=" + line);
-							e.printStackTrace();
+					try {
+						rf.seek(p);
+						String line = null;
+						while ((line = rf.readLine()) != null) {
+							if (line.length() == 0)
+								continue;
+							if (logger.isDebugEnabled())
+								logger.debug("New line from file: " + f + " " + line);
+							p = rf.getFilePointer();
+							try {
+								handler.newLine(file.getAbsolutePath(),line,context);
+							} catch (Exception e) {
+								logger.warn("Handler error: " + f + " " + e + " line=" + line);
+								e.printStackTrace();
+							}
 						}
 					}
-					rf.close();
+					finally {
+						rf.close();
+					}
 				}
 				synchronized (this) {
 					filePointerMap.put(f, p);

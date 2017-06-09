@@ -60,6 +60,8 @@ import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
+import org.openecomp.ncomp.utils.SecurityUtils;
+import org.apache.commons.io.serialization.ValidatingObjectInputStream;
 
 public class FileUtils {
 	public static final Logger logger = Logger.getLogger("org.openecomp.ncomp.utils.io");
@@ -109,7 +111,7 @@ public class FileUtils {
 		resource.getContents().add(ecore);
 		// error = validate(req,0);
 		// if (error != null) throw new Exception("Bad request");
-		FileOutputStream fos = new FileOutputStream(FileUtils.safeFileName(fileName));
+		FileOutputStream fos = new FileOutputStream(SecurityUtils.safeFileName(fileName));
 		Map<String, Object> options = new HashMap<String, Object>();
 		// gz is misleading, but supported for backwards compatibility
 		if (fileName.endsWith("zip") || fileName.endsWith("gz")) {
@@ -127,7 +129,7 @@ public class FileUtils {
 		init();
 		Resource resource = resourceSet.createResource(URI.createURI(fileName));
 		resource.getContents().addAll(ecores);
-		FileOutputStream fos = new FileOutputStream(FileUtils.safeFileName(fileName));
+		FileOutputStream fos = new FileOutputStream(SecurityUtils.safeFileName(fileName));
 		Map<String, Object> options = new HashMap<String, Object>();
 		// gz is misleading, but supported for backwards compatibility
 		if (fileName.endsWith("zip") || fileName.endsWith("gz")) {
@@ -162,7 +164,7 @@ public class FileUtils {
 	}
 
 	static public EObject file2ecore_old(String fileName, boolean unload, boolean useCommonRS) {
-		File file = new File(FileUtils.safeFileName(fileName));
+		File file = new File(SecurityUtils.safeFileName(fileName));
 		if (!file.exists()) {
 			throw new RuntimeException("File does not exists: " + fileName);
 		}
@@ -212,7 +214,7 @@ public class FileUtils {
 	}
 
 	static public EList<EObject> file2ecores(String fileName, boolean unload, boolean useCommonRS) {
-		File file = new File(FileUtils.safeFileName(fileName));
+		File file = new File(SecurityUtils.safeFileName(fileName));
 		if (!file.exists()) {
 			throw new RuntimeException("File does not exists: " + fileName);
 		}
@@ -240,11 +242,11 @@ public class FileUtils {
 		try {
 			resource.load(options);
 		} catch (IOException e1) {
-			logger.error("I/O error loading " + safeFileName(fileName) + " : " + e1.getMessage());
+			logger.error("I/O error loading " + SecurityUtils.safeFileName(fileName) + " : " + e1.getMessage());
 			e1.printStackTrace();
 			return res;
 		} catch (Exception e1) {
-			logger.error("Content error loading " + safeFileName(fileName) + " : " + e1.getMessage());
+			logger.error("Content error loading " + SecurityUtils.safeFileName(fileName) + " : " + e1.getMessage());
 			e1.printStackTrace();
 			return res;
 		}
@@ -301,10 +303,10 @@ public class FileUtils {
 
 	public static InputStream filename2stream(String fileName, ErrorMap errors) {
 		InputStream res = null;
-		File aFile = new File(FileUtils.safeFileName(fileName));
+		File aFile = new File(SecurityUtils.safeFileName(fileName));
 		if (!aFile.canRead()) {
 			// try to see if a file with .gz extention exists.
-			aFile = new File(FileUtils.safeFileName(fileName + ".gz"));
+			aFile = new File(SecurityUtils.safeFileName(fileName + ".gz"));
 			if (aFile.canRead())
 				return filename2stream(fileName + ".gz", errors);
 			if (errors != null)
@@ -315,7 +317,7 @@ public class FileUtils {
 			logger.debug("Reading " + fileName);
 			if (fileName.endsWith(".gz")) {
 				try {
-					res = new GZIPInputStream(new FileInputStream(FileUtils.safeFileName(fileName)), 524288);
+					res = new GZIPInputStream(new FileInputStream(SecurityUtils.safeFileName(fileName)), 524288);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -384,7 +386,7 @@ public class FileUtils {
 
 	public static OutputStreamWriter filename2writer(String filename, boolean gzip) {
 		try {
-			File f = new File(FileUtils.safeFileName(filename));
+			File f = new File(SecurityUtils.safeFileName(filename));
 			if (f.exists()) f.delete();
 			String p = f.getParent();
 			if (p != null) {
@@ -392,10 +394,10 @@ public class FileUtils {
 				d.mkdirs();
 			}
 			if (gzip) {
-				OutputStream s = new GZIPOutputStream(new FileOutputStream(FileUtils.safeFileName(filename)), 524288);
+				OutputStream s = new GZIPOutputStream(new FileOutputStream(SecurityUtils.safeFileName(filename)), 524288);
 				return new OutputStreamWriter(s);
 			} else
-				return new FileWriter(FileUtils.safeFileName(filename));
+				return new FileWriter(SecurityUtils.safeFileName(filename));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -403,7 +405,7 @@ public class FileUtils {
 	}
 
 	private static void find(String dirName, String regex, List<String> res) {
-		File dir = new File(FileUtils.safeFileName(dirName));
+		File dir = new File(SecurityUtils.safeFileName(dirName));
 		String[] children = dir.list();
 		if (children == null) {
 			// Either dir does not exist or is not a directory
@@ -411,7 +413,7 @@ public class FileUtils {
 			for (int i = 0; i < children.length; i++) {
 				// Get filename of file or directory
 				String ff = dirName + "/" + children[i];
-				File f = new File(FileUtils.safeFileName(ff));
+				File f = new File(SecurityUtils.safeFileName(ff));
 				if (f.isDirectory()) {
 					find(ff, regex, res);
 				} else {
@@ -432,7 +434,7 @@ public class FileUtils {
 	public static void ecore2xmlfile(XMLProcessor x, EObject doc, String filename) {
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream(FileUtils.safeFileName(filename));
+			fos = new FileOutputStream(SecurityUtils.safeFileName(filename));
 
 			ResourceSet resourceSet = new ResourceSetImpl();
 			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
@@ -456,12 +458,12 @@ public class FileUtils {
 	}
 
 	public static void mkdirForFile(String filename) {
-		File f = new File(FileUtils.safeFileName(filename));
+		File f = new File(SecurityUtils.safeFileName(filename));
 		f.getParentFile().mkdirs();
 	}
 
 	public static boolean uptodate(String filename, String interval) {
-		File file = new File(FileUtils.safeFileName(filename));
+		File file = new File(SecurityUtils.safeFileName(filename));
 		if (!file.exists())
 			return false;
 		Date now = new Date();
@@ -471,15 +473,15 @@ public class FileUtils {
 	}
 
 	public static void touch(String filename) throws IOException {
-		File file = new File(FileUtils.safeFileName(filename));
+		File file = new File(SecurityUtils.safeFileName(filename));
 		file.createNewFile();
 		Date now = new Date();
 		file.setLastModified(now.getTime());
 	}
 
 	public static void copyFile(String sourceFile, String destFile) throws IOException {
-		File from = new File(FileUtils.safeFileName(sourceFile));
-		File to = new File(FileUtils.safeFileName(destFile));
+		File from = new File(SecurityUtils.safeFileName(sourceFile));
+		File to = new File(SecurityUtils.safeFileName(destFile));
 		copyFile(from, to);
 	}
 
@@ -491,8 +493,8 @@ public class FileUtils {
 		FileChannel source = null;
 		FileChannel destination = null;
 		try {
-			source = new FileInputStream(FileUtils.safeFile(sourceFile)).getChannel();
-			destination = new FileOutputStream(FileUtils.safeFile(destFile)).getChannel();
+			source = new FileInputStream(SecurityUtils.safeFile(sourceFile)).getChannel();
+			destination = new FileOutputStream(SecurityUtils.safeFile(destFile)).getChannel();
 			destination.transferFrom(source, 0, source.size());
 		} finally {
 			if (source != null) {
@@ -510,7 +512,7 @@ public class FileUtils {
 			destDir.mkdirs();
 		}
 		for (File f : sourceDir.listFiles()) {
-			File dest = createSafeFile(destDir, f.getName());
+			File dest = SecurityUtils.createSafeFile(destDir, f.getName());
 			if (f.isDirectory()) {
 				copyDirectory(f, dest);
 				continue;
@@ -542,12 +544,17 @@ public class FileUtils {
 		dir.delete();
 	}
 
-	public static Object file2object(String filename) {
+	public static Object file2object(String filename, List<String> whiteList) {
 		try {
 			InputStream in = filename2stream(filename, null);
 			if (in == null)
 				return null;
-			ObjectInputStream r = new ObjectInputStream(in);
+			ValidatingObjectInputStream r = new ValidatingObjectInputStream(in);
+			whiteList.add("java.util.*");
+			whiteList.add("java.lang.*");
+			for (String s : whiteList) {
+				r.accept(s);
+			}
 			Object o;
 			try {
 				o = r.readObject();
@@ -565,10 +572,10 @@ public class FileUtils {
 		// TODO Auto-generated method stub
 		try {
 			String f = filename + ".tmp";
-			File f1 = new File(safeFileName(f));
-			File f2 = new File(safeFileName(filename));
+			File f1 = new File(SecurityUtils.safeFileName(f));
+			File f2 = new File(SecurityUtils.safeFileName(filename));
 			if (!f1.getParentFile().exists()) f1.getParentFile().mkdirs();
-			ObjectOutputStream w = new ObjectOutputStream(new FileOutputStream(safeFileName(f)));
+			ObjectOutputStream w = new ObjectOutputStream(new FileOutputStream(SecurityUtils.safeFileName(f)));
 			try {
 				w.writeObject(o);
 				w.flush();
@@ -628,26 +635,6 @@ public class FileUtils {
 		}
 	}
 
-	public static File createSafeFile(File dir, String fname) {
-		String fname2 = dir.getAbsolutePath() + "/" + fname;
-		return new File(safeFileName(fname2));
-	}
-
-	public static String safeFileName(String file) {
-		// creating file with safer creation. 
-		if (file.contains("../")) 
-			throw new RuntimeException("File name contain ..: " + file);
-		if (file.contains("\n")) 
-			throw new RuntimeException("File name contain newline: " + file);
-		return file;
-	}
-	
-	private static File safeFile(File file) {
-		// creating file with safer creation. 
-		if (file.getAbsolutePath().contains("..")) 
-			throw new RuntimeException("File name contain ..: " + file.getAbsolutePath());
-		return file;
-	}
 
 	public static Thread copyStreamThread(final InputStream inputStream, final OutputStream outputStream) {
 		Thread t = new Thread() {

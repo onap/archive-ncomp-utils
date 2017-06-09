@@ -149,12 +149,12 @@ public class DiffUtilTest extends TestCase {
 		assertEquals("editDist random 1000 0.01", d1,d2);
 		d2 = DiffUtil.editDistSimple(alist, blist);
 		assertEquals("editDistSimple random 1000 0.01", d1,d2);
-		d1 = gentest(120, alist, blist, 1000, 0.1, 0.1, 0.1);
+		d1 = gentest(SecurityUtils.inSecureSeed(120), alist, blist, 1000, 0.1, 0.1, 0.1);
 		d2 = DiffUtil.editDistStats(alist, blist);
 		assertEquals("editDist random 1000 0.1", 265,d2);
 		d2 = DiffUtil.editDistSimple(alist, blist);
 		assertEquals("editDistSimple random 1000 0.1", 265,d2);
-		d1 = gentest(130, alist, blist, 10000, 0.01, 0.01, 0.01);
+		d1 = gentest(SecurityUtils.inSecureSeed(130), alist, blist, 10000, 0.01, 0.01, 0.01);
 		d2 = DiffUtil.editDistStats(alist, blist);
 		assertEquals("editDist random 10000 0.01", 296, d2);
 //		d2 = DiffUtil.editDistSimple(alist, blist);

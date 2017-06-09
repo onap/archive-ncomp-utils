@@ -91,7 +91,7 @@ public class CryptoUtils {
 
 	public static InputStream getInputStream(final InputStream in, final EncryptionType type, final String key) {
 		final Cipher aes;
-		logger.debug("crypto in stream:" + PropertyUtil.replaceForLogForcingProtection(type) + " " + PropertyUtil.replaceForLogForcingProtection(key));
+		logger.debug("crypto in stream:" + p(type) + " " + p(key));
 		try {
 			aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			switch (type) {
@@ -109,6 +109,11 @@ public class CryptoUtils {
 			throw new RuntimeException("encryption failed:" + e);
 		}
 	}
+	
+	private static String p(Object v) {
+		return SecurityUtils.logForcingProtection(v);
+	}
+
 
 	public static OutputStream getOutputStream(final OutputStream out, final EncryptionType type, final String key) {
 		final Cipher aes;
@@ -141,7 +146,7 @@ public class CryptoUtils {
 		ByteArrayOutputStream o = new ByteArrayOutputStream();
 		InputStream in = null;
 		try {
-			in = new FileInputStream(FileUtils.safeFileName(fileName));
+			in = new FileInputStream(SecurityUtils.safeFileName(fileName));
 			FileUtils.copyStream(in, o);
 		} catch (IOException e) {
 			throw new RuntimeException("getKey failed:" + e);
@@ -167,8 +172,8 @@ public class CryptoUtils {
 		}
 		if (command.equals("file")) {
 			EncryptionType t = EncryptionType.valueOf(args[1].toUpperCase());
-			InputStream in = new FileInputStream(FileUtils.safeFileName(args[2]));
-			OutputStream out = new FileOutputStream(FileUtils.safeFileName(args[3]));
+			InputStream in = new FileInputStream(SecurityUtils.safeFileName(args[2]));
+			OutputStream out = new FileOutputStream(SecurityUtils.safeFileName(args[3]));
 			try {
 				in = getInputStream(in, t, args[4]);
 				FileUtils.copyStream(in, out);
@@ -195,7 +200,7 @@ public class CryptoUtils {
 		PrivateKey privateKey = keyPair.getPrivate();
 		FileOutputStream out = null;
 		try {
-			out = new FileOutputStream(FileUtils.safeFileName(key + ".private"));
+			out = new FileOutputStream(SecurityUtils.safeFileName(key + ".private"));
 			out.write(encode64(privateKey.getEncoded()).getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -205,7 +210,7 @@ public class CryptoUtils {
 				out.close();
 		}
 		try {
-			out = new FileOutputStream(FileUtils.safeFileName(key + ".public"));
+			out = new FileOutputStream(SecurityUtils.safeFileName(key + ".public"));
 			out.write(encode64(publicKey.getEncoded()).getBytes());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -244,7 +249,7 @@ public class CryptoUtils {
 		InputStream fis = null;
 		MessageDigest complete = null;
 		try {
-			fis = new FileInputStream(FileUtils.safeFileName(filename));
+			fis = new FileInputStream(SecurityUtils.safeFileName(filename));
 			byte[] buffer = new byte[1024];
 			complete = MessageDigest.getInstance("MD5");
 			int numRead;
